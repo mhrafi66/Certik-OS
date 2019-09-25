@@ -1,0 +1,87 @@
+
+Section: 2A
+Lab Group: 4
+Student ID:
+160041066
+160041047
+160041077
+
+TASK 1:
+
+->.set BOOT0, 0x7c00
+.set is used to convert the value of symbol to expression. Here it is directing boot0 to be loaded to physical address 
+0x7c00 (physical start address of boot0)
+
+->.set BOOT1, 0x7e00
+.set is used to convert the value of symbol to expression. Here it is directing boot1 to be loaded to physical address 
+0x7e00 (physical start address of boot1)
+
+TASK 2:
+
+->cli
+It was told to clear the interrupts flag or disabling the interrupts where as suggestion cli and sti were given. 'cli' command is to
+"Clear Interrupt Flag" and 'sti' is to "Set Interrupt Flag". So we have used 'cli' here.
+
+->cld
+It was told to clear the direction flag, to configure auto-increment mode where as suggestion cld and std were given. 'cld' command is to
+"Clear Direction Flag" and 'std' is to "Set Direction Flag". So we have used 'cld' here.
+
+TASK 3:
+ 
+-> movw	$STARTUP_MSG, %si
+we are copying start up messsage in the source instruction register. This message is going to be stored in data segment's source index.
+
+->call	putstr
+calling putstring to print the content of si register(startup message)
+
+
+TASK 4:
+
+TASK 4:
+ 
+ ->lgdt gdtdesc
+ 
+ global descriptor table holds descriptor for every segment.It loads the segments of memory.gdtdesc is described below.
+ 
+
+ TASK 5:
+ 
+-> movl	%cr0, %eax
+copying control register in eax(control register does addressing,interrupt control etc). Here we are copying it to accumulator to do or operation as 
+it can only be done at accumulator.
+
+-> orl	$0x1, %eax
+enabling lsb to let work in protected mode as LSB of control register0 is considered as protected mode bit.
+
+-> movl	%eax, %cr0
+storing updated content in control register
+
+-> ljmp $PROT_MODE_CSEG, $protcseg
+$PROT_MODE_CSEG=selector of code segment in gdt,
+$protcseg=destination address where we want to store it
+Actually here PROT_MODE_CSEG is segment and protecseg is ofset.
+
+
+TASK 6:
+
+	 xorw	%ax, %ax
+	 movw	$PROT_MODE_DSEG, %ax
+	 movw	%ax, %ds
+	 movw	%ax, %es
+	 movw	%ax, %fs
+	 movw	%ax, %gs
+	 movw	%ax, %ss
+	 
+	 Setting the %ds, %es, %fs, %gs, and %ss segmentation registers to the PROT_MODE_DSEG selector.
+	 
+	 
+TASK 7:
+		 
+	pushl	$smap
+	pushl	$BOOT0
+	movl	(BOOT0-4), %eax
+	pushl	%eax
+	call	boot1main
+	
+	smap and BOOT0(mbr address) and BOOT0-4(DEVICE id) is the parameter of boot1 main.So before calling,we are pushing parameters in stack in reverse order
+

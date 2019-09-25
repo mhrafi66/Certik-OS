@@ -1,0 +1,106 @@
+
+Section: 2A
+Lab group: 4
+
+Student ID:
+160041066
+160041047
+160041077
+
+
+
+TASK 1:
+
+->.set BOOT0, 0x7c00
+.set is used to convert the value of symbol to expression. Here it is directing boot0 to be loaded to physical address 
+0x7c00 (physical start address of boot0)
+
+->.set BOOT1, 0x7e00
+.set is used to convert the value of symbol to expression. Here it is directing boot1 to be loaded to physical address 
+0x7e00 (physical start address of boot1)
+
+TASK 2:
+
+->cli
+It was told to clear the interrupts flag or disabling the interrupts where as suggestion cli and sti were given. 'cli' command is to
+"Clear Interrupt Flag" and 'sti' is to "Set Interrupt Flag". So we have used 'cli' here.
+
+->cld
+It was told to clear the direction flag, to configure auto-increment mode where as suggestion cld and std were given. 'cld' command is to
+"Clear Direction Flag" and 'std' is to "Set Direction Flag". So we have used 'cld' here.
+
+
+TASK 3:
+
+->xorw %ax, %ax
+  movw %ax, %ds
+  movw %ax, %es
+  movw %ax, %ss
+It was told to reset all the segments registers value. By XORing with itself makes ax's value to be zero. Then by copying and re-writing,
+we set the value zero for ds,es and ss also.
+
+TASK 4:
+
+->xorl	%eax, %eax			#erasing lower byte of ax register
+  movb	%dl, %al			#move lower byte of %edx to %eax
+  movl	%eax, BOOT0 - 4
+To reset eax register and to move lower bytes of edx to eax.Booting device ID was stored in lower byte of %edx. So we are moving only lower byte of %edx
+register to accumulator. Then booting device ID should be stored in the very first byte which is the exactly previous byte of boot0 which is denoted by 
+boot0-4.
+
+
+
+TASK 5:
+
+->movw  $(BOOT0 - 4), %bp
+  movw  $(BOOT0 - 4), %sp
+	
+It makes stack pointer (esp) and base pointer (ebp) to point to the same memory address which was supposed to be used as stack
+and in task 4 the address (0x00ff) was stored in eax.This stack pointer should point at booting device id.
+
+
+
+TASK 6:
+
+->pushl	$0x0		
+
+ set the start of the stack.
+	
+	
+->pushl	$0x1		
+
+LBA address is pushed to stack.pushl is as because of its being 8 bytes long
+	
+->pushw	$0x7e00		
+
+Destination address
+
+->pushw	$62		
+	
+setting number of sectors to read
+
+->pushw	$0x10		
+setting the size of DAP
+
+->xorw	%eax, %eax  
+reseting accumulator
+
+->movw	$0x4200, %eax	
+setting ah to 0x42 where 0x00 to al
+
+->movw	%sp, %si	
+DAP address was stored in stack pointer . Now it is going to be stored in source instruction.
+
+->int	$0x13		
+interrupt is called
+
+->jmp BOOT1		
+jump to boot1
+
+
+
+
+
+
+
+
